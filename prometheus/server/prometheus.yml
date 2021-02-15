@@ -1,0 +1,28 @@
+global:
+  scrape_interval: 15s
+  external_labels:
+    monitor: 'codelab-monitor'
+rule_files:
+  - /etc/prometheus/rules.yml
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+      #- targets: ['http://192.168.100.102:18080','http://192.168.100.102:18081','http://192.168.100.102:18082']
+      #- targets: ['192.168.100.102:18080','192.168.100.102:18081','192.168.100.102:18082']
+      - targets: ['random18080:18080','random18081:18081','random18082:18082']
+      #- targets: ['http://192.168.1.7:18080','http://192.168.1.7:18081','http://192.168.1.7:18082']
+      #- targets: ['zz:18080','zz:18081','zz:18082']
+        labels:
+          group: 'client-golang'
+      - targets: ['node-exporter:9100']
+        labels:
+          group: 'client-node-exporter'
+      - targets: ['pushgateway:9091']
+        labels:
+          group: 'pushgateway'
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]

@@ -1,0 +1,17 @@
+version: "3.0"
+
+services:
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: always
+    ports:
+      - "9100:9100"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network-node
+
+networks:
+  prom-network-node:
+    driver: bridge

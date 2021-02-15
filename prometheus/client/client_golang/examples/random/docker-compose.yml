@@ -1,0 +1,43 @@
+version: "3.0"
+
+services:
+  random18080:
+    image: zz/random
+    container_name: random18080
+    restart: always
+    ports:
+      - "18080:18080"
+    working_dir: /random
+    command: [./random, "-listen-address=:18080"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - random-network
+  random18081:
+    image: zz/random
+    container_name: random18081
+    restart: always
+    ports:
+      - "18081:18081"
+    working_dir: /random
+    command: [./random, "-listen-address=:18081"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - random-network
+  random18082:
+    image: zz/random
+    container_name: random18082
+    restart: always
+    ports:
+      - "18082:18082"
+    working_dir: /random
+    command: [./random, "-listen-address=:18082"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - random-network
+
+networks:
+  random-network:
+    driver: bridge

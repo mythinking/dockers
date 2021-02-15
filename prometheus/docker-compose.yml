@@ -1,0 +1,111 @@
+version: "3.0"
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: always
+    privileged: true
+    command: [--config.file=/etc/prometheus/prometheus.yml, --web.enable-lifecycle]
+    ports:
+      - "9090:9090"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./server/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./server/rules.yml:/etc/prometheus/rules.yml
+    networks:
+      - prom-network
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: always
+    ports:
+      - "9100:9100"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network
+  pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway
+    restart: always
+    ports:
+      - "9091:9091"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    restart: always
+    ports:
+      - "9093:9093"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - prom-network
+  notify:
+    image: zz/exe
+    container_name: notify
+    restart: always
+    ports:
+      - "19000:19000"
+    working_dir: /opt/go/src/notify
+    command: [./notify]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./notify/src/notify:/opt/go/src/notify
+    networks:
+      - prom-network
+  random18080:
+    image: zz/random
+    container_name: random18080
+    restart: always
+    ports:
+      - "18080:18080"
+    working_dir: /random
+    command: [./random, "-listen-address=:18080"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network
+  random18081:
+    image: zz/random
+    container_name: random18081
+    restart: always
+    ports:
+      - "18081:18081"
+    working_dir: /random
+    command: [./random, "-listen-address=:18081"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network
+  random18082:
+    image: zz/random
+    container_name: random18082
+    restart: always
+    ports:
+      - "18082:18082"
+    working_dir: /random
+    command: [./random, "-listen-address=:18082"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - prom-network
+
+networks:
+  prom-network:
+    driver: bridge
